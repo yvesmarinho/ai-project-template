@@ -242,6 +242,19 @@ make status    # Status completo
 make doctor    # Diagnóstico do sistema
 ```
 
+### 🛡️ **Segurança e Proteção**
+```bash
+make security-cleanup   # Remover arquivos sensíveis automaticamente
+make security-scan     # Verificar vazamentos de segredos/tokens
+make security-validate # Validar configurações de segurança
+```
+
+**⚠️ IMPORTANTE:** O sistema possui proteção automática contra vazamentos de:
+- Tokens de autenticação (VS Code NONCE, GitHub tokens)
+- Arquivos de sessão com informações sensíveis
+- Chaves SSH, certificados e credenciais
+- Arquivos `.env` com variáveis de ambiente
+
 ---
 
 ## 🎨 Templates Disponíveis
@@ -312,11 +325,60 @@ chmod +x scripts/*.sh
 
 **Solução:**
 ```bash
-# Certifique-se de estar na pasta do template
+# Certifique-se de estar na pasta correta
 cd caminho/para/ai-project-template
 pwd  # Deve mostrar o caminho correto
 ls   # Deve mostrar: Makefile, scripts/, templates/, etc.
 ```
+
+---
+
+## 🛡️ Segurança e Proteção de Dados
+
+### 🔒 **Proteção Automática Ativada**
+
+O **AI Project Template v2.0** possui proteção enterprise-grade contra vazamentos de dados:
+
+#### ✅ **O que está protegido automaticamente:**
+- 🔐 **Tokens de autenticação** (VS Code NONCE, GitHub tokens)
+- 📁 **Arquivos de sessão** (movidos para `/tmp/` - nunca no repositório)
+- 🔑 **Chaves SSH e certificados** (`.key`, `.pem`, `.p12`)
+- 🌍 **Variáveis de ambiente** (`.env*`, `secrets.json`)
+- 📋 **Logs sensíveis** (`.sessions/`, `.ai-template/`)
+
+#### 🛡️ **Comandos de Segurança Disponíveis:**
+```bash
+make security-validate    # Verificar se proteções estão ativas
+make security-cleanup     # Remover arquivos sensíveis encontrados  
+make security-scan        # Procurar possíveis vazamentos
+```
+
+#### ⚠️ **Indicadores de Segurança:**
+- **✅ Verde**: Todas as proteções ativas
+- **⚠️ Amarelo**: Arquivos sensíveis detectados (serão protegidos)
+- **❌ Vermelho**: Problema de segurança requer atenção
+
+### 🔍 **Como Funciona a Proteção**
+
+1. **`.gitignore` inteligente** - Bloqueia automaticamente arquivos perigosos
+2. **Sistema de sessão seguro** - Arquivos temporários vão para `/tmp/`
+3. **Validação contínua** - Comando `doctor` verifica segurança
+4. **Limpeza automática** - Scripts removem dados sensíveis
+
+### 🚨 **Se Você Encontrar um Problema de Segurança**
+
+```bash
+# 1. Pare tudo e execute:
+make security-cleanup
+
+# 2. Valide que foi corrigido:
+make security-validate  
+
+# 3. Se ainda houver problemas:
+make security-scan
+```
+
+**💡 Dica:** Execute `make security-validate` regularmente para manter seu projeto seguro!
 
 ---
 
@@ -325,8 +387,9 @@ ls   # Deve mostrar: Makefile, scripts/, templates/, etc.
 ### 🎯 **Primeiros Passos Recomendados**
 1. **Sempre comece com:** `make doctor` (verifica se tudo está OK)
 2. **Depois execute:** `make help` (para ver opções)
-3. **Configure IA:** `make copilot-setup`
-4. **Otimize projeto:** `make ai-optimize`
+3. **Valide segurança:** `make security-validate` (protege arquivos sensíveis)
+4. **Configure IA:** `make copilot-setup`
+5. **Otimize projeto:** `make ai-optimize`
 
 ### 🧠 **Entendendo o Sistema**
 - **Verde ✅**: Tudo funcionando perfeitamente
@@ -443,13 +506,14 @@ Use esta lista para começar:
 - [ ] ✅ Baixei o template
 - [ ] ✅ Executei `make doctor` (tudo verde?)
 - [ ] ✅ Executei `make help` (vi os comandos?)
+- [ ] ✅ Executei `make security-validate` (segurança ativa?)
 - [ ] ✅ Executei `make copilot-setup` (IA configurada?)
 - [ ] ✅ Executei `make ai-optimize` (projeto otimizado?)
 - [ ] ✅ Abri VS Code com `code .`
 - [ ] ✅ GitHub Copilot está funcionando?
 - [ ] ✅ Fiz primeiro backup com `make version-backup FILE=README.md`
 
-**🎉 Se todos estão ✅, você está pronto para programar com IA!**
+**🎉 Se todos estão ✅, você está pronto para programar com IA com segurança total!**
 
 ---
 
@@ -460,6 +524,7 @@ O **AI Project Template** transforma você de iniciante para desenvolvedor profi
 ### 🎯 **Lembre-se:**
 - **`make help`** - Quando esquecer comandos
 - **`make doctor`** - Quando algo não funcionar  
+- **`make security-validate`** - Para verificar segurança
 - **`make ai-optimize`** - Para otimizar qualquer projeto
 - **`make copilot-setup`** - Para configurar IA
 
@@ -468,6 +533,7 @@ O **AI Project Template** transforma você de iniciante para desenvolvedor profi
 ---
 
 **Criado com ❤️ pela comunidade de desenvolvedores**  
-**Versão:** 2.0.0 | **Atualizado:** 20/10/2025
+**Versão:** 2.0.1 | **Atualizado:** 21/10/2025  
+**Segurança:** Enterprise-grade protection ✅
 
-*Este README foi gerado automaticamente pelo AI Project Template* 🤖
+*Este README foi atualizado com melhorias de segurança* 🛡️

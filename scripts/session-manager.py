@@ -54,7 +54,9 @@ class SessionManager:
     def __init__(self, project_path: str = None):
         """Inicializar gerenciador de sessão"""
         self.project_path = Path(project_path or os.getcwd()).resolve()
-        self.session_dir = self.project_path / ".ai-template"
+        # SECURITY: Usar /tmp para evitar vazamento de secrets no repositório
+        import tempfile
+        self.session_dir = Path(tempfile.gettempdir()) / "ai-template-sessions"
         self.session_dir.mkdir(exist_ok=True)
         
         self.session_file = self.session_dir / ".session-current"

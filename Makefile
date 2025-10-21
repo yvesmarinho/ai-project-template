@@ -23,12 +23,14 @@ PROJECT_CREATOR := ./scripts/create-project.sh
 VERSION_MANAGER := ./scripts/version-manager.py
 FRAMEWORK_DETECTOR := ./scripts/framework-detector.py
 COPILOT_SETUP := ./scripts/copilot-setup.sh
+SECURITY_CLEANUP := ./scripts/security-cleanup.sh
 
 # Verificar se scripts existem
 SCRIPTS_AVAILABLE := $(shell test -f $(SESSION_MANAGER) && test -f $(LANGUAGE_DETECTOR) && echo "true" || echo "false")
 VERSION_AVAILABLE := $(shell test -f $(VERSION_MANAGER) && echo "true" || echo "false")
 FRAMEWORK_AVAILABLE := $(shell test -f $(FRAMEWORK_DETECTOR) && echo "true" || echo "false")
 COPILOT_AVAILABLE := $(shell test -f $(COPILOT_SETUP) && echo "true" || echo "false")
+SECURITY_AVAILABLE := $(shell test -f $(SECURITY_CLEANUP) && echo "true" || echo "false")
 
 ##@ 🚀 Session Management
 .PHONY: session-start session-end session-status session-history
@@ -330,7 +332,54 @@ ai-optimize: detect-language detect-frameworks ## 🎯 Otimizar projeto para AI 
 	fi; \
 	echo -e "$(GREEN)✅ Otimização concluída! Reinicie o VS Code para aplicar$(NC)"
 
-##@ 📊 Information & Help
+##@ � Security & Cleanup
+.PHONY: security-cleanup security-scan security-validate
+
+security-cleanup: ## 🚨 Remover arquivos sensíveis e secrets vazados
+	@echo -e "$(RED)🚨 Executando limpeza de segurança...$(NC)"
+	@$(MAKE) _log ACTION_TYPE="security_cleanup" DESCRIPTION="Removendo arquivos sensíveis e secrets"
+ifeq ($(SECURITY_AVAILABLE),true)
+	@bash $(SECURITY_CLEANUP)
+else
+	@echo -e "$(RED)❌ Script security-cleanup.sh não encontrado$(NC)"
+	@echo -e "$(YELLOW)⚠️  Execute manualmente: rm -rf .ai-template/ .session-current$(NC)"
+endif
+
+security-scan: ## 🔍 Escanear projeto em busca de secrets vazados
+	@echo -e "$(BLUE)🔍 Escaneando secrets vazados...$(NC)"
+	@$(MAKE) _log ACTION_TYPE="security_scan" DESCRIPTION="Escaneando projeto para secrets"
+	@echo -e "$(CYAN)🔍 Procurando UUIDs suspeitos...$(NC)"
+	@find . -type f \( -name "*.md" -o -name "*.json" -o -name "*.txt" -o -name "*.py" \) \
+		-not -path "./.git/*" -not -path "./.venv/*" \
+		-exec grep -l "[0-9a-f]\{8\}-[0-9a-f]\{4\}-[0-9a-f]\{4\}-[0-9a-f]\{4\}-[0-9a-f]\{12\}" {} \; 2>/dev/null | head -10 || echo -e "$(GREEN)✅ Nenhum UUID suspeito encontrado$(NC)"
+	@echo -e "$(CYAN)🔍 Verificando arquivos .env...$(NC)"
+	@find . -name ".env*" -type f 2>/dev/null | head -5 | sed 's/^/  ⚠️  /' || echo -e "$(GREEN)✅ Nenhum arquivo .env encontrado$(NC)"
+	@echo -e "$(CYAN)🔍 Verificando arquivos de sessão...$(NC)"
+	@find . -name "*.session*" -o -name ".session-*" -type f 2>/dev/null | head -5 | sed 's/^/  🚨 /' || echo -e "$(GREEN)✅ Nenhum arquivo de sessão encontrado$(NC)"
+
+security-validate: ## ✅ Validar configurações de segurança
+	@echo -e "$(PURPLE)✅ Validando segurança do projeto...$(NC)"
+	@$(MAKE) _log ACTION_TYPE="security_validate" DESCRIPTION="Validando configurações de segurança"
+	@echo -e "$(CYAN)📋 Verificando .gitignore...$(NC)"
+	@if [ -f .gitignore ]; then \
+		echo -e "$(GREEN)✅ .gitignore existe$(NC)"; \
+		for rule in ".ai-template/" ".session-current" "*.session" ".env" "*.key"; do \
+			if grep -q "$$rule" .gitignore; then \
+				echo -e "$(GREEN)  ✅ $$rule protegido$(NC)"; \
+			else \
+				echo -e "$(RED)  ❌ $$rule NÃO protegido$(NC)"; \
+			fi; \
+		done; \
+	else \
+		echo -e "$(RED)❌ .gitignore não existe$(NC)"; \
+	fi
+	@echo -e "$(CYAN)🔐 Verificando diretórios sensíveis...$(NC)"
+	@if [ -d .ai-template ]; then echo -e "$(RED)  🚨 .ai-template/ existe (REMOVER)$(NC)"; else echo -e "$(GREEN)  ✅ .ai-template/ não existe$(NC)"; fi
+	@if [ -d .sessions ]; then echo -e "$(RED)  🚨 .sessions/ existe (REMOVER)$(NC)"; else echo -e "$(GREEN)  ✅ .sessions/ não existe$(NC)"; fi
+	@if [ -f .session-current ]; then echo -e "$(RED)  🚨 .session-current existe (REMOVER)$(NC)"; else echo -e "$(GREEN)  ✅ .session-current não existe$(NC)"; fi
+	@echo -e "$(GREEN)✅ Validação de segurança concluída$(NC)"
+
+##@ �📊 Information & Help
 .PHONY: help info status doctor
 
 help: ## 💡 Mostrar esta ajuda
@@ -369,6 +418,7 @@ doctor: ## 🏥 Diagnóstico do ambiente
 	@test -f $(VERSION_MANAGER) && echo -e "    $(GREEN)✅ version-manager.py$(NC)" || echo -e "    $(RED)❌ version-manager.py$(NC)"
 	@test -f $(FRAMEWORK_DETECTOR) && echo -e "    $(GREEN)✅ framework-detector.py$(NC)" || echo -e "    $(RED)❌ framework-detector.py$(NC)"
 	@test -f $(COPILOT_SETUP) && echo -e "    $(GREEN)✅ copilot-setup.sh$(NC)" || echo -e "    $(RED)❌ copilot-setup.sh$(NC)"
+	@test -f $(SECURITY_CLEANUP) && echo -e "    $(GREEN)✅ security-cleanup.sh$(NC)" || echo -e "    $(RED)❌ security-cleanup.sh$(NC)"
 
 ##@ 🔧 Internal Functions (Language Detection)
 .PHONY: _detect_and_init _detect_and_dev _detect_and_build _detect_and_test _detect_and_install _detect_and_run _detect_and_clean _log

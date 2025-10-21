@@ -1,0 +1,126 @@
+# AI Project Template - .gitignore
+# Arquivo de segurança para prevenir vazamento de secrets
+
+# 🚨 SECURITY: Session files contêm environment variables sensíveis
+.ai-template/
+.sessions/
+.session-current
+*.session
+
+# 🔐 SECRETS: Arquivos que podem conter tokens/keys
+.env
+.env.local
+.env.production
+config.secret.py
+secrets.json
+*.key
+*.pem
+
+# 📊 Logs e Reports temporários
+logs/
+*.log
+temp.log
+debug.log
+
+# 🗄️ Backups e Versões (podem conter dados sensíveis)
+.versions/
+*.backup
+*-v[0-9][0-9][0-9].*
+
+# 💻 VS Code específico (pode conter secrets)
+.vscode/settings.json
+.vscode/launch.json
+.vscode/tasks.json
+# Manter apenas templates
+!.vscode/*.template.*
+
+# 🐍 Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# 🔄 Virtual Environments
+.venv/
+venv/
+ENV/
+env/
+.env/
+
+# 📦 Package managers
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+package-lock.json
+yarn.lock
+
+# 🗃️ Databases locais
+*.db
+*.sqlite
+*.sqlite3
+
+# 🏗️ Build e temp
+/build/
+/dist/
+*.tmp
+*.temp
+.cache/
+
+# 📱 Mobile
+.expo/
+.expo-shared/
+
+# 🧪 Testing
+.coverage
+.nyc_output
+coverage/
+*.cover
+.hypothesis/
+.pytest_cache/
+
+# 🔧 IDEs
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# 🚀 Deploy específico
+docker-compose.override.yml
+.dockerignore.local
+
+# 📋 Documentação temporária
+docs/_build/
+docs/.doctrees/
+.sphinx-build-*
+
+# 🎯 AI Project Template específico
+ai_project_template.code-workspace
+*.code-workspace
+!templates/**/*.template.code-workspace
+
+# ⚠️ NEVER COMMIT: Arquivos que NUNCA devem ser commitados
+# Adicione aqui qualquer arquivo que contenha:
+# - Passwords, API keys, tokens
+# - Dados pessoais ou sensíveis  
+# - Configurações específicas do ambiente local
+# - Session IDs ou UUIDs de tracking

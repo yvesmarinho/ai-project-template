@@ -1,0 +1,175 @@
+{
+    "recommendations": [
+        // GitHub Copilot - AI pair programmer
+        "github.copilot",
+        "github.copilot-chat",
+        {
+            {#if language
+            }
+        }
+    {
+            {#if (eq language "python")
+            }
+        }
+        // Python development
+        "ms-python.python",
+        "ms-python.pylint",
+        "ms-python.black-formatter",
+        "ms-python.isort",
+        "ms-toolsai.jupyter",
+        {
+            {#if framework
+            }
+        }
+    {
+            {#if (eq framework "fastapi")
+            }
+        }
+        // FastAPI specific
+        "ms-python.flake8",
+        "redhat.vscode-yaml",
+        "42crunch.vscode-openapi"{
+            {/if
+            }
+        }
+    {
+            {#if (eq framework "django")
+            }
+        }
+        // Django specific
+        "batisteo.vscode-django",
+        "thebarkman.vscode-djaneiro"{
+            {/if
+            }
+        }
+    {
+            {#if (eq framework "flask")
+            }
+        }
+        // Flask specific
+        "wholroyd.jinja"{
+            {/if
+            }
+        }
+    {
+            {/if
+            }
+        }
+    {
+            {/if
+            }
+        }
+    
+    {
+            {#if (eq language "javascript")
+            }
+        }
+        // JavaScript/Node.js development
+        "bradlc.vscode-tailwindcss",
+        "esbenp.prettier-vscode",
+        "dbaeumer.vscode-eslint",
+        {
+            {#if framework
+            }
+        }
+    {
+            {#if (eq framework "react")
+            }
+        }
+        // React specific
+        "dsznajder.es7-react-js-snippets",
+        "burkeholland.simple-react-snippets"{
+            {/if
+            }
+        }
+    {
+            {#if (eq framework "express")
+            }
+        }
+        // Express specific
+        "msjsdiag.vscode-express"{
+            {/if
+            }
+        }
+    {
+            {#if (eq framework "nextjs")
+            }
+        }
+        // Next.js specific
+        "bradlc.vscode-tailwindcss"{
+            {/if
+            }
+        }
+    {
+            {/if
+            }
+        }
+    {
+            {/if
+            }
+        }
+    
+    {
+            {#if (eq language "typescript")
+            }
+        }
+        // TypeScript development
+        "ms-vscode.vscode-typescript-next",
+        "bradlc.vscode-tailwindcss",
+        "esbenp.prettier-vscode"{
+            {/if
+            }
+        }
+    
+    {
+            {#if (eq language "go")
+            }
+        }
+        // Go development
+        "golang.go"{
+            {/if
+            }
+        }
+    
+    {
+            {#if (eq language "rust")
+            }
+        }
+        // Rust development
+        "rust-lang.rust-analyzer"{
+            {/if
+            }
+        }
+    
+    {
+            {#if (eq language "java")
+            }
+        }
+        // Java development
+        "redhat.java",
+        "vscjava.vscode-java-pack"{
+            {/if
+            }
+        }
+    {
+            {/if
+            }
+        }
+        // General development tools
+        "ms-vscode.vscode-json",
+        "redhat.vscode-yaml",
+        "ms-vscode-remote.remote-containers",
+        "ms-azuretools.vscode-docker",
+        // Git and version control
+        "eamodio.gitlens",
+        "mhutchie.git-graph",
+        // Productivity
+        "streetsidesoftware.code-spell-checker",
+        "gruntfuggly.todo-tree",
+        "alefragnani.bookmarks",
+        "ritwickdey.liveserver",
+        // AI and automation
+        "tabnine.tabnine-vscode",
+        "visualstudioexptteam.vscodeintellicode"
+    ]
+}

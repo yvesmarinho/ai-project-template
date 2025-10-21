@@ -1,0 +1,244 @@
+{
+  "folders": [
+    {
+      "name": "ai_project_template",
+      "path": "."
+    }
+  ],
+  "settings": {
+    // GitHub Copilot configuration
+    "github.copilot.enable": {
+      "*": true,
+      "yaml": true,
+      "plaintext": true,
+      "markdown": true
+    },
+    "github.copilot.chat.enableCodeActions": true,
+    "github.copilot.chat.enableInlineChat": true,
+    
+    {{#if language}}
+    {{#if (eq language "python")}}
+    // Python specific settings for better Copilot experience
+    "python.defaultInterpreterPath": "./venv/bin/python",
+    "python.terminal.activateEnvironment": true,
+    "python.linting.enabled": true,
+    "python.linting.pylintEnabled": true,
+    "python.formatting.provider": "black",
+    "python.sortImports.args": ["--profile", "black"],
+    "python.analysis.autoImportCompletions": true,
+    "python.analysis.typeCheckingMode": "basic",
+    
+    // Enhanced docstring generation for Copilot
+    "autoDocstring.docstringFormat": "google",
+    "autoDocstring.startOnNewLine": false,
+    "autoDocstring.includeExtendedSummary": true,
+    
+    {{#if framework}}
+    {{#if (eq framework "fastapi")}}
+    // FastAPI optimizations
+    "python.analysis.extraPaths": ["./src"],
+    "files.associations": {
+      "*.py": "python"
+    }
+    {{/if}}
+    {{#if (eq framework "django")}}
+    // Django optimizations
+    "python.analysis.extraPaths": ["./src"],
+    "emmet.includeLanguages": {
+      "django-html": "html"
+    }
+    {{/if}}
+    {{/if}}
+    {{/if}}
+    
+    {{#if (eq language "javascript")}}
+    // JavaScript/Node.js settings for Copilot
+    "typescript.preferences.quoteStyle": "single",
+    "javascript.preferences.quoteStyle": "single",
+    "typescript.suggest.autoImports": true,
+    "javascript.suggest.autoImports": true,
+    "typescript.updateImportsOnFileMove.enabled": "always",
+    "javascript.updateImportsOnFileMove.enabled": "always",
+    
+    {{#if framework}}
+    {{#if (eq framework "react")}}
+    // React specific optimizations
+    "emmet.includeLanguages": {
+      "javascript": "javascriptreact",
+      "typescript": "typescriptreact"
+    },
+    "emmet.triggerExpansionOnTab": true
+    {{/if}}
+    {{#if (eq framework "nextjs")}}
+    // Next.js optimizations
+    "typescript.preferences.includePackageJsonAutoImports": "on"
+    {{/if}}
+    {{/if}}
+    {{/if}}
+    
+    {{#if (eq language "typescript")}}
+    // TypeScript enhanced settings
+    "typescript.preferences.quoteStyle": "single",
+    "typescript.suggest.autoImports": true,
+    "typescript.updateImportsOnFileMove.enabled": "always",
+    "typescript.preferences.includePackageJsonAutoImports": "on"
+    {{/if}}
+    {{/if}}
+    
+    // General Copilot-optimized settings
+    "editor.suggestSelection": "first",
+    "editor.tabCompletion": "on",
+    "editor.wordBasedSuggestions": "matchingDocuments",
+    "editor.parameterHints.enabled": true,
+    "editor.quickSuggestions": {
+      "other": true,
+      "comments": true,
+      "strings": true
+    },
+    
+    // Inline suggestions for better Copilot experience
+    "editor.inlineSuggest.enabled": true,
+    "editor.inlineSuggest.showToolbar": "onHover",
+    
+    // Code formatting
+    "editor.formatOnSave": true,
+    "editor.formatOnPaste": true,
+    "editor.codeActionsOnSave": {
+      "source.organizeImports": "explicit",
+      "source.fixAll": "explicit"
+    },
+    
+    // Git integration
+    "git.enableSmartCommit": true,
+    "git.confirmSync": false,
+    "git.autofetch": true,
+    
+    // File exclusions for better performance
+    "files.exclude": {
+      "**/.git": true,
+      "**/.svn": true,
+      "**/.hg": true,
+      "**/CVS": true,
+      "**/.DS_Store": true,
+      "**/Thumbs.db": true,
+      "**/__pycache__": true,
+      "**/*.pyc": true,
+      "**/node_modules": true,
+      "**/dist": true,
+      "**/build": true,
+      "**/.versions": true
+    },
+    
+    // Search configuration
+    "search.exclude": {
+      "**/node_modules": true,
+      "**/bower_components": true,
+      "**/*.code-search": true,
+      "**/__pycache__": true,
+      "**/venv": true,
+      "**/.venv": true,
+      "**/dist": true,
+      "**/build": true,
+      "**/.versions": true
+    },
+    
+    // Terminal integration
+    "terminal.integrated.enableMultiLinePasteWarning": false,
+    "terminal.integrated.copyOnSelection": true,
+    
+    // Workspace trust
+    "security.workspace.trust.untrustedFiles": "open"
+  },
+  
+  "extensions": {
+    "recommendations": [
+      "github.copilot",
+      "github.copilot-chat",
+      {{#if language}}
+      {{#if (eq language "python")}}
+      "ms-python.python",
+      "ms-python.pylint",
+      "ms-python.black-formatter"
+      {{/if}}
+      {{#if (eq language "javascript")}}
+      "esbenp.prettier-vscode",
+      "dbaeumer.vscode-eslint"
+      {{/if}}
+      {{#if (eq language "typescript")}}
+      "ms-vscode.vscode-typescript-next"
+      {{/if}}
+      {{else}}
+      "ms-vscode.vscode-json"
+      {{/if}}
+    ]
+  },
+  
+  "tasks": {
+    "version": "2.0.0",
+    "tasks": [
+      {
+        "label": "AI Template: Analyze Project",
+        "type": "shell",
+        "command": "make",
+        "args": ["analyze-full"],
+        "group": "build",
+        "presentation": {
+          "echo": true,
+          "reveal": "always",
+          "focus": false,
+          "panel": "shared"
+        },
+        "problemMatcher": []
+      },
+      {
+        "label": "AI Template: Detect Frameworks",
+        "type": "shell",
+        "command": "make",
+        "args": ["detect-frameworks"],
+        "group": "build",
+        "presentation": {
+          "echo": true,
+          "reveal": "always"
+        }
+      },
+      {{#if language}}
+      {{#if (eq language "python")}}
+      {
+        "label": "Python: Run Tests with Coverage",
+        "type": "shell",
+        "command": "python",
+        "args": ["-m", "pytest", "--cov=src", "--cov-report=html"],
+        "group": "test",
+        "presentation": {
+          "echo": true,
+          "reveal": "always"
+        }
+      },
+      {
+        "label": "Python: Format Code",
+        "type": "shell",
+        "command": "black",
+        "args": ["src/", "tests/"],
+        "group": "build"
+      }
+      {{/if}}
+      {{#if (eq language "javascript")}}
+      {
+        "label": "Node: Run Tests",
+        "type": "shell",
+        "command": "npm",
+        "args": ["test"],
+        "group": "test"
+      },
+      {
+        "label": "Node: Lint Code",
+        "type": "shell",
+        "command": "npm",
+        "args": ["run", "lint"],
+        "group": "build"
+      }
+      {{/if}}
+      {{/if}}
+    ]
+  }
+}

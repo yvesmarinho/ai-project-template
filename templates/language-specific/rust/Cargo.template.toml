@@ -1,0 +1,27 @@
+[package]
+name = "{{PROJECT_NAME}}"
+version = "{{PROJECT_VERSION}}"
+edition = "{{RUST_EDITION}}"
+description = "{{PROJECT_DESCRIPTION}}"
+authors = ["{{AUTHOR_NAME}} <{{AUTHOR_EMAIL}}>"]
+license = "{{LICENSE}}"
+repository = "{{REPOSITORY_URL}}"
+homepage = "{{REPOSITORY_URL}}"
+documentation = "{{DOCUMENTATION_URL}}"
+readme = "README.md"
+keywords = [{{KEYWORDS}}]
+categories = [{{CATEGORIES}}]
+
+[dependencies]
+{{DEPENDENCIES}}
+
+[dev-dependencies]
+{{DEV_DEPENDENCIES}}
+
+[[bin]]
+name = "{{BINARY_NAME}}"
+path = "src/main.rs"
+
+[lib]
+name = "{{LIBRARY_NAME}}"
+path = "src/lib.rs"

@@ -1,0 +1,506 @@
+prompt:
+  role: user
+  content:
+    description: "Criar um template de projeto para criação automatizada de novos projetos com utilização MCP e Agents Copilot."
+    version: "1.0.0"
+    created_date: "2025-10-20"
+    last_updated: "2025-10-20"
+    specification:
+      project_name: "ai-project-template"
+      response_type: "Template enterprise completo com fluxo de trabalho inteligente baseado em GitHub Copilot"
+      documentation_style: "Documentar o código segundo padrões específicos de cada linguagem (JSDoc, Docstring, XMLDoc, etc.)"
+      workflow_stages: "objetivo.yaml → Copilot → mcp-questions.yaml → MCP automático → activate-context"
+      template_version_pattern: "v{major}.{minor}.{patch}-{build}"
+    rules:
+          - "Todos os arquivos gerados devem ser armazenados nas devidas pastas, na raiz do projeto só os arquivos extremamente necessários"
+          - "Template deve ser agnóstico a tecnologia específica"
+          - "Fluxo de trabalho deve ser guiado por prompts para GitHub Copilot"
+          - "Configuração MCP deve ser gerada automaticamente baseada nas especificações"
+          - "Template deve suportar múltiplas linguagens e tipos de projeto"
+          - "Sistema de versionamento dos arquivos editados deve ser implementado"
+          - "Diário de todas as ações tomadas com muitos detalhes deve ser mantido em SESSION-REPORT-YYYY-MM-DD.md, um para cada dia na pasta reports"
+          - "Arquivo TODO.md atualizado com as tarefas pendentes e manter histórico do que foi feito, sempre salvo na raiz do projeto"
+          - "Arquivo VERSION-REPORT.md deve ser mantido com todas as mudanças e versões dos arquivos editados, sempre salvo na pasta reports"
+          - "Arquivo MELHORIAS.md é um arquivo com as melhorias no código, sempre salvo na pasta reports"
+          - "Modelo de ISSUES de melhorias e bugs deve ser gerado na pasta issues"
+          - "Na pasta templates, gerar modelos de arquivos e estruturas para novos projetos"
+          - "Utilizar as melhores práticas de Dev, DevOps e automação."
+          - "Manter total neutralidade em relação à linguagem de programação"
+          - "Adaptar-se automaticamente às convenções e padrões de cada ecosistema"
+          - "Detectar e configurar ferramentas apropriadas baseadas no contexto do projeto"
+          - "Separação clara entre arquivos do TEMPLATE e arquivos do PROJETO gerado"
+          - "Template deve ser reutilizável e projetos gerados devem ser independentes"
+          - "Nunca misturar arquivos de configuração do template com arquivos do projeto"
+          - "Cada projeto gerado deve ter sua própria identidade e configurações"
+    folder_structure:
+      - "app - Código-fonte do projeto (estrutura específica por tipo)"
+      - "docs - Documentação (gerada automaticamente)"
+      - "issues - Armazenar issues e bugs reportados"
+      - "mcp-questions.yaml - Configuração gerada pelo Copilot"
+      - "objetivo.yaml - Especificação detalhada do projeto"
+      - "pattern_code - Templates e padrões de código reutilizáveis"
+      - "reports - Conterá os relatórios e documentos das sessões"
+      - "snippets - Códigos auxiliares e snippets para desenvolvimento"
+      - "templates - Modelos de arquivos e estruturas para novos projetos"
+      - "test - Testes automatizados (framework baseado na linguagem)"
+      - ".secrets - armazena dados sensíveis (não versionados)"
+      - ".vscode - Configurações VS Code e MCP (geradas automaticamente)"
+    
+    # === SEPARAÇÃO TEMPLATE vs PROJETO ===
+    file_organization:
+      template_core_files:
+        root_level:
+          - "objetivo.yaml - Especificação do template (NUNCA copiado para projeto)"
+          - "mcp-questions.example.yaml - Exemplo de configuração (referência)"
+          - "TODO.md - Tarefas do template (NUNCA copiado para projeto)"
+          - "README.template.md - Documentação do template"
+          - "ai-project-template.code-workspace - Workspace do template"
+        
+        template_directories:
+          - "templates/ - Modelos que SERÃO copiados para novos projetos"
+          - "pattern_code/ - Padrões de código reutilizáveis"
+          - "snippets/ - Códigos auxiliares para desenvolvimento"
+          - "docs/template/ - Documentação específica do template"
+        
+        template_metadata:
+          - ".template-config/ - Configurações internas do template"
+          - ".template-version - Arquivo de versão do template"
+          - "TEMPLATE-CHANGELOG.md - Histórico de mudanças do template"
+      
+      generated_project_files:
+        copied_from_template:
+          - "templates/project-structure/ → Estrutura base do projeto"
+          - "templates/configs/ → Arquivos de configuração base"
+          - "templates/automation/ → Scripts de automação"
+          - "templates/docs/ → Templates de documentação"
+        
+        generated_dynamically:
+          - "mcp-questions.yaml - Gerado baseado no objetivo.yaml"
+          - "README.md - Criado especificamente para o projeto"
+          - "package.json/requirements.txt/Cargo.toml - Baseado na linguagem"
+          - ".gitignore - Adaptado para a linguagem/framework"
+          - "Makefile/build scripts - Configurados por tecnologia"
+        
+        project_specific:
+          - "src/ ou app/ - Código do projeto (nunca no template)"
+          - "tests/ - Testes específicos do projeto"
+          - "config/project/ - Configurações específicas do projeto"
+          - "docs/project/ - Documentação específica do projeto"
+      
+      isolation_rules:
+        never_copy_to_project:
+          - "objetivo.yaml"
+          - "mcp-questions.example.yaml"
+          - "TODO.md do template"
+          - "reports/ do template"
+          - "issues/ do template"
+          - ".template-config/"
+          - "TEMPLATE-*"
+        
+        always_copy_to_project:
+          - "templates/base-structure/**"
+          - "templates/automation-scripts/**"
+          - "pattern_code/universal/**"
+        
+        conditionally_copy:
+          - "templates/language-specific/{language}/**"
+          - "templates/framework-specific/{framework}/**"
+          - "templates/project-type/{type}/**"
+      
+      naming_conventions:
+        template_files:
+          pattern: "*.template.*"
+          examples: 
+            - "README.template.md"
+            - "package.template.json"
+            - "Makefile.template"
+        
+        generated_files:
+          pattern: "Geração dinâmica baseada em contexto"
+          examples:
+            - "README.md (gerado do README.template.md)"
+            - "package.json (gerado do package.template.json)"
+        
+        project_files:
+          pattern: "Arquivos específicos criados pelo usuário"
+          examples:
+            - "src/main.{ext}"
+            - "tests/test_main.{ext}"
+            - "config/settings.{ext}"
+      
+      directory_mapping:
+        template_to_project:
+          "templates/base-structure/": "."
+          "templates/src-templates/": "src/"
+          "templates/test-templates/": "tests/"
+          "templates/docs-templates/": "docs/"
+          "templates/config-templates/": "config/"
+          "templates/automation/": "scripts/"
+        
+        template_internal:
+          "pattern_code/": "Mantido no template, referenciado"
+          "snippets/": "Mantido no template, usado para geração"
+          "docs/template/": "Documentação interna do template"
+          "reports/": "Logs e relatórios do template"
+      
+      version_control:
+        template_repository:
+          tracked_files:
+            - "Todos os arquivos do template"
+            - "Histórico de mudanças do template"
+            - "Documentação do template"
+          
+          ignored_files:
+            - "Projetos gerados temporariamente"
+            - "Cache de geração"
+            - ".secrets/ conteúdo"
+        
+        project_repository:
+          tracked_files:
+            - "Código fonte do projeto"
+            - "Configurações específicas do projeto"
+            - "Documentação do projeto"
+          
+          ignored_files:
+            - "Arquivos temporários de build"
+            - "Dependências (node_modules, __pycache__, etc.)"
+            - ".secrets/ conteúdo"
+            - "Arquivos de cache da linguagem"
+      
+      project_initialization:
+        workflow_separation:
+          step_1: "Análise do objetivo.yaml (template)"
+          step_2: "Geração de mcp-questions.yaml (projeto)"
+          step_3: "Cópia seletiva de templates/ (template → projeto)"
+          step_4: "Geração de arquivos específicos (projeto)"
+          step_5: "Configuração de ambiente (projeto)"
+        
+        file_transformations:
+          - "*.template.* → * (processamento de placeholders)"
+          - "Substituição de {{variables}} por valores reais"
+          - "Adaptação de imports/includes para linguagem"
+          - "Configuração de paths relativos corretos"
+    expected_outcome:
+      - return_info: "Template enterprise completo com automação inteligente via GitHub Copilot para configuração MCP"
+      - workflow_result: "Fluxo de 5 etapas: init-project → analyze-objective → generate-config → build-mcp → activate-context"
+      - ai_integration: "Prompts específicos para GitHub Copilot guiarem toda a configuração"
+      - multi_technology: "Suporte automático para qualquer linguagem de programação através de detecção e adaptação dinâmica"
+    profile:
+      - role: template_architect
+        skill_level: "expert"
+        description: "Arquiteto de templates enterprise com foco em reutilização e automação."
+      - role: ai_integration_specialist
+        skill_level: "advanced"
+        description: "Especialista em integração com GitHub Copilot e automação inteligente."
+      - role: multi_technology_expert
+        skill_level: "advanced"
+        description: "Expert em múltiplas linguagens e frameworks para templates agnósticos."
+      - role: devops_automation
+        skill_level: "advanced"
+        description: "Especialista em DevOps e automação de workflows de desenvolvimento."
+    features_implemented:
+      - "Fluxo de trabalho inteligente com 5 etapas automatizadas"
+      - "Sistema de prompts específicos para GitHub Copilot"
+      - "Template agnóstico a tecnologia com adaptação automática"
+      - "Sistema de build universal (Make, npm scripts, cargo, go modules, etc.)"
+      - "Scripts inteligentes para geração de configurações (adaptáveis por linguagem)"
+      - "Suporte nativo a múltiplas linguagens e frameworks"
+      - "Templates de código com padrões específicos por linguagem"
+      - "Documentação automática baseada na configuração e linguagem"
+      - "Configuração VS Code dinâmica e específica por projeto"
+      - "Estrutura de pastas extensível e padronizada"
+      - "Sistema de geração de HISTORICO.md cronológico para callback de sessões"
+      - "Versionamento automático de arquivos editados (filename-vnnn.* pattern)"
+      - "Backup e recuperação de códigos com falha na execução"
+      - "Rastreamento completo de mudanças e rollback automático"
+    
+    # === NEUTRALIDADE DE LINGUAGEM ===
+    language_agnostic_design:
+      core_principles:
+        - "Zero assumções sobre linguagem específica"
+        - "Detecção automática de ecossistema e ferramentas"
+        - "Adaptação dinâmica às convenções da linguagem"
+        - "Configuração baseada em padrões universais"
+      
+      detection_mechanisms:
+        file_analysis:
+          - "Extensões de arquivo (.py, .js, .go, .rs, .java, .cpp, .cs, etc.)"
+          - "Arquivos de configuração (package.json, requirements.txt, Cargo.toml, pom.xml, etc.)"
+          - "Estrutura de diretórios padrão por linguagem"
+          - "Presença de ferramentas específicas (node_modules, __pycache__, target/, etc.)"
+        
+        content_analysis:
+          - "Análise de sintaxe e keywords específicas"
+          - "Detecção de imports, includes, using statements"
+          - "Identificação de frameworks através de dependências"
+          - "Reconhecimento de padrões arquiteturais"
+      
+      adaptive_configuration:
+        build_systems:
+          - "Auto-seleção entre Make, CMake, Gradle, Maven, npm, cargo, dotnet, etc."
+          - "Geração de scripts de build apropriados"
+          - "Configuração de targets específicos por ecosistema"
+        
+        dependency_management:
+          - "Detecção de package managers (pip, npm, cargo, maven, nuget, etc.)"
+          - "Geração de arquivos de dependência corretos"
+          - "Configuração de repositórios e registries"
+        
+        testing_frameworks:
+          - "Auto-detecção de frameworks disponíveis (pytest, jest, JUnit, etc.)"
+          - "Configuração de test runners apropriados"
+          - "Setup de coverage tools específicos"
+        
+        documentation:
+          - "Adaptação aos padrões de documentação (JSDoc, Docstring, XMLDoc, RustDoc, etc.)"
+          - "Geração de templates de README específicos"
+          - "Configuração de geradores de documentação (Sphinx, JSDoc, etc.)"
+      
+      universal_templates:
+        project_structure: "Estruturas adaptáveis baseadas em convenções da linguagem"
+        configuration_files: "Templates que se adaptam ao ecosistema detectado"
+        automation_scripts: "Scripts que detectam e usam ferramentas apropriadas"
+        ci_cd_pipelines: "Pipelines que se configuram baseados na tecnologia"
+        
+        file_management:
+          template_isolation: "Arquivos do template nunca poluem o projeto gerado"
+          selective_copying: "Cópia inteligente baseada no contexto do projeto"
+          dynamic_generation: "Geração de arquivos específicos por linguagem/framework"
+          clean_separation: "Template e projeto mantêm identidades distintas"
+    
+    # === CONFIGURAÇÕES DE SEGURANÇA ===
+    security:
+      sensitive_data_handling:
+        - "Pasta .secrets/ para dados sensíveis (não versionada)"
+        - "Variáveis de ambiente para configurações críticas"
+        - "Criptografia automática de credenciais em templates"
+        - "Validação de inputs para prevenir injection attacks"
+      access_control:
+        - "Permissões específicas por tipo de arquivo gerado"
+        - "Controle de acesso baseado em roles do projeto"
+        - "Auditoria de todas as modificações de arquivos"
+      compliance:
+        - "GDPR compliance para templates com dados pessoais"
+        - "SOC2 compliance para templates enterprise"
+        - "Logs detalhados para auditoria de segurança"
+
+    # === CONFIGURAÇÕES DE PERFORMANCE ===
+    performance:
+      benchmarks:
+        - "Geração de projeto completo: < 30 segundos"
+        - "Análise de objetivo: < 5 segundos"
+        - "Configuração MCP: < 10 segundos"
+        - "Ativação de contexto: < 15 segundos"
+      optimization:
+        - "Cache inteligente de templates frequentemente usados"
+        - "Lazy loading de dependências por linguagem"
+        - "Paralelização de operações I/O intensivas"
+        - "Compressão automática de arquivos grandes"
+
+    # === MATRIZ DE COMPATIBILIDADE ===
+    compatibility_matrix:
+      language_detection:
+        auto_detection_methods:
+          - "Análise de extensões de arquivo (.py, .js, .go, .rs, .java, etc.)"
+          - "Detecção de arquivos de configuração (package.json, requirements.txt, Cargo.toml, etc.)"
+          - "Análise de sintaxe e imports/includes"
+          - "Verificação de ferramentas de build (Makefile, build.gradle, pom.xml, etc.)"
+        
+      supported_ecosystems:
+        compiled_languages:
+          characteristics: ["static typing", "build step required", "performance optimized"]
+          common_patterns: ["binary output", "package managers", "dependency resolution"]
+          examples: ["Go, Rust, Java, C#, C++, Kotlin, Scala"]
+        
+        interpreted_languages:
+          characteristics: ["dynamic execution", "script-based", "rapid development"]
+          common_patterns: ["source distribution", "virtual environments", "runtime dependencies"]
+          examples: ["Python, JavaScript, Ruby, PHP, Perl, Lua"]
+        
+        hybrid_languages:
+          characteristics: ["compilation + interpretation", "JIT compilation", "bytecode"]
+          common_patterns: ["intermediate compilation", "virtual machines", "cross-platform"]
+          examples: ["Java, C#, Kotlin, Scala, Python (PyPy)"]
+
+      universal_patterns:
+        project_structure:
+          - "src/ ou app/ para código fonte"
+          - "test/ ou tests/ para testes"
+          - "docs/ para documentação"
+          - "config/ para configurações"
+          - "scripts/ para automação"
+        
+        build_systems:
+          - "Detecção automática do sistema de build (Make, CMake, Gradle, Maven, npm, cargo, etc.)"
+          - "Geração de scripts de build universais"
+          - "Configuração de CI/CD agnóstica"
+        
+        dependency_management:
+          - "Auto-detecção de gerenciadores de pacote"
+          - "Geração de arquivos de dependência apropriados"
+          - "Configuração de ambientes isolados (venv, Docker, etc.)"
+
+    # === ESTRATÉGIAS DE TESTE ===
+    testing_strategies:
+      universal_testing:
+        - "Auto-detecção de frameworks de teste por linguagem"
+        - "Geração de templates de teste adaptativos"
+        - "Configuração automática de coverage tools"
+        - "Padronização de estrutura de testes independente da linguagem"
+      
+      framework_detection:
+        - "Identificação automática de frameworks de teste disponíveis"
+        - "Configuração de mocks e stubs apropriados por ecosistema"
+        - "Setup de test runners e reporting unificado"
+      
+      quality_assurance:
+        - "Coverage mínimo de 80% para código gerado (adaptável por linguagem)"
+        - "Testes de integração com MCP servers"
+        - "Validação de workflow completo independente da tecnologia"
+        - "Testes de compatibilidade entre versões de linguagem/framework"
+      
+      validation_testing:
+        - "Cenários completos de criação de projeto"
+        - "Testes de performance em diferentes ambientes"
+        - "Validação de templates gerados para qualquer linguagem"
+        - "Verificação de conformidade com padrões da linguagem"
+
+    # === PIPELINE CI/CD ===
+    cicd_pipeline:
+      stages:
+        - "validate-yaml-syntax"
+        - "run-unit-tests"
+        - "integration-tests"
+        - "security-scan"
+        - "performance-benchmarks"
+        - "deploy-to-staging"
+        - "e2e-tests"
+        - "deploy-to-production"
+      automation_triggers:
+        - "Push to main branch"
+        - "Pull request creation"
+        - "Tag creation (releases)"
+        - "Scheduled daily runs"
+
+    # === ESTRATÉGIAS DE ERROR HANDLING ===
+    error_handling:
+      logging:
+        - "Logs estruturados em JSON para análise automática"
+        - "Níveis: TRACE, DEBUG, INFO, WARN, ERROR, FATAL"
+        - "Correlação de logs por session ID"
+        - "Retenção de logs por 90 dias"
+      recovery:
+        - "Rollback automático em caso de falha crítica"
+        - "Checkpoint system para operações longas"
+        - "Retry mechanism com exponential backoff"
+        - "Failover para configurações padrão"
+      monitoring:
+        - "Health checks para todos os componentes"
+        - "Alertas automáticos para falhas críticas"
+        - "Dashboards de performance e erro rates"
+        - "SLA monitoring e reporting"
+
+    # === DEPLOYMENT PATTERNS ===
+    deployment:
+      patterns:
+        - "Blue-green deployment para updates"
+        - "Canary releases para novas features"
+        - "Feature flags para experimental features"
+        - "Rolling updates com zero downtime"
+      environments:
+        development:
+          - "Hot reload habilitado"
+          - "Debug mode ativo"
+          - "Logs verbosos"
+        staging:
+          - "Ambiente espelho da produção"
+          - "Testes automatizados completos"
+          - "Performance monitoring"
+        production:
+          - "Configurações otimizadas"
+          - "Monitoring completo"
+          - "Backup automático"
+
+    # === OBSERVABILIDADE ===
+    observability:
+      metrics:
+        - "Template generation success rate"
+        - "Average project creation time"
+        - "Most used languages/frameworks"
+        - "Error rates by component"
+      tracing:
+        - "Distributed tracing com OpenTelemetry"
+        - "Trace correlation entre componentes"
+        - "Performance profiling automático"
+      alerting:
+        - "Alertas em tempo real para failures"
+        - "Notificações via Slack/Teams/Email"
+        - "Escalação automática por severidade"
+
+# === METADADOS DO TEMPLATE ===
+metadata:
+  template_info:
+    name: "AI Project Template"
+    version: "1.0.0"
+    license: "MIT"
+    author: "AI Assistant"
+    maintainers: ["Yves Marinho"]
+    repository: "https://github.com/user/ai-project-template"
+    documentation: "https://docs.ai-project-template.com"
+  
+  changelog:
+    - version: "1.0.0"
+      date: "2025-10-20"
+      changes:
+        - "Initial template structure"
+        - "Multi-language support"
+        - "MCP integration"
+        - "Copilot workflow automation"
+        - "Comprehensive security and performance configurations"
+  
+  roadmap:
+    v1_1:
+      target_date: "2025-11-20"
+      features:
+        - "GraphQL template support"
+        - "Kubernetes deployment templates"
+        - "AI-powered code optimization"
+    v1_2:
+      target_date: "2025-12-20"
+      features:
+        - "Microservices architecture templates"
+        - "Advanced monitoring dashboards"
+        - "Multi-cloud deployment support"
+
+# === CONFIGURAÇÕES DE QUALIDADE ===
+quality_assurance:
+  code_standards:
+    - "Consistent code formatting per language"
+    - "Comprehensive documentation requirements"
+    - "Security-first development practices"
+    - "Performance optimization guidelines"
+  
+  review_process:
+    - "Peer review for all template changes"
+    - "Automated security scanning"
+    - "Performance impact assessment"
+    - "Documentation completeness check"
+  
+  maintenance:
+    - "Monthly dependency updates"
+    - "Quarterly security audits"
+    - "Annual architecture reviews"
+    - "Continuous improvement based on usage analytics"
+  
+  template_project_separation:
+    validation_rules:
+      - "Verificação automática de que arquivos do template não vazam para projetos"
+      - "Validação de que projetos gerados são independentes do template"
+      - "Testes de integridade da separação template/projeto"
+      - "Auditoria de dependências circulares entre template e projeto"
+    
+    best_practices:
+      - "Template deve funcionar como factory pattern"
+      - "Projetos gerados devem ser autocontidos"
+      - "Zero poluição de arquivos de configuração do template"
+      - "Máxima reutilização do template sem acoplamento"

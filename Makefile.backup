@@ -1,0 +1,743 @@
+# AI Project Template - Universal Makefile v2.0
+# Sistema avançado com session management e language detection
+# Inspirado em enterprise-project-model patterns
+
+# Configurações
+SHELL := /bin/bash
+.DEFAULT_GOAL := help
+
+# Cores para output
+GREEN := \033[0;32m
+YELLOW := \033[1;33m
+RED := \033[0;31m
+BLUE := \033[0;34m
+CYAN := \033[0;36m
+PURPLE := \033[0;35m
+NC := \033[0m
+
+# Variáveis
+PROJECT_NAME ?= $(shell basename $(CURDIR))
+SESSION_MANAGER := ./scripts/session-manager.py
+LANGUAGE_DETECTOR := ./scripts/detect-language.py
+PROJECT_CREATOR := ./scripts/create-project.sh
+
+##@ 🚀 Session Management
+.PHONY: session-start session-end session-status session-history
+
+session-start: ## 🟢 Iniciar nova sessão de desenvolvimento
+	@echo -e "$(GREEN)🚀 Iniciando sessão de desenvolvimento...$(NC)"
+ifeq ($(SCRIPTS_AVAILABLE),true)
+	@python3 $(SESSION_MANAGER) start --type development --user "$(USER)"
+else
+	@echo -e "$(YELLOW)⚠️  Scripts de sessão não encontrados. Continuando sem tracking...$(NC)"
+endif
+
+session-end: ## 🔴 Finalizar sessão atual
+	@echo -e "$(RED)🔴 Finalizando sessão...$(NC)"
+ifeq ($(SCRIPTS_AVAILABLE),true)
+	@python3 $(SESSION_MANAGER) end
+else
+	@echo -e "$(YELLOW)⚠️  Scripts de sessão não encontrados$(NC)"
+endif
+
+session-status: ## 📊 Mostrar status da sessão atual
+ifeq ($(SCRIPTS_AVAILABLE),true)
+	@python3 $(SESSION_MANAGER) status
+else
+	@echo -e "$(YELLOW)⚠️  Scripts de sessão não encontrados$(NC)"
+endif
+
+session-history: ## 📋 Mostrar histórico de sessões
+ifeq ($(SCRIPTS_AVAILABLE),true)
+	@python3 $(SESSION_MANAGER) history --limit 10
+else
+	@echo -e "$(YELLOW)⚠️  Scripts de sessão não encontrados$(NC)"
+endif
+
+##@ 🔍 Language Detection & Project Creation
+.PHONY: detect-language create-project analyze-structure
+
+detect-language: ## 🔤 Detectar linguagem do projeto atual
+	@echo -e "$(BLUE)🔍 Detectando linguagem do projeto...$(NC)"
+ifeq ($(SCRIPTS_AVAILABLE),true)
+	@python3 $(LANGUAGE_DETECTOR) . --verbose
+else
+	@echo -e "$(YELLOW)⚠️  Script de detecção não encontrado$(NC)"
+endif
+
+create-project: ## 🏗️  Criar novo projeto (uso: make create-project NAME=my-project LANG=python TYPE=api)
+	@echo -e "$(PURPLE)🏗️  Criando novo projeto...$(NC)"
+ifndef NAME
+	@echo -e "$(RED)❌ Erro: NAME não especificado$(NC)"
+	@echo -e "$(CYAN)   Uso: make create-project NAME=my-project [LANG=auto] [TYPE=api] [DEST=./]$(NC)"
+	@exit 1
+endif
+	@$(PROJECT_CREATOR) "$(NAME)" "$(or $(LANG),auto)" "$(or $(TYPE),api)" "$(or $(DEST),.)"
+
+analyze-structure: ## 📁 Analisar estrutura do projeto atual
+	@echo -e "$(CYAN)📁 Analisando estrutura do projeto...$(NC)"
+	@echo -e "$(BLUE)📋 Diretórios principais:$(NC)"
+	@find . -maxdepth 2 -type d -not -path '*/.*' | head -20 | sed 's/^/  /'
+	@echo -e "$(BLUE)📄 Arquivos de configuração:$(NC)"
+	@find . -maxdepth 2 -name "*.json" -o -name "*.yaml" -o -name "*.yml" -o -name "*.toml" -o -name "*.cfg" -o -name "*.ini" | head -10 | sed 's/^/  /'
+
+##@ 🔧 Development (Language Agnostic)
+.PHONY: init dev build test clean install run
+
+init: session-start detect-language ## 🎯 Inicializar ambiente de desenvolvimento
+	@echo -e "$(GREEN)🎯 Inicializando ambiente...$(NC)"
+	@$(MAKE) _log ACTION_TYPE="init" DESCRIPTION="Inicializando ambiente de desenvolvimento"
+	@$(MAKE) _detect_and_init
+
+dev: ## 🔄 Iniciar modo desenvolvimento com hot reload
+	@echo -e "$(CYAN)🔄 Iniciando modo desenvolvimento...$(NC)"
+	@$(MAKE) _log ACTION_TYPE="dev_start" DESCRIPTION="Iniciando modo desenvolvimento"
+	@$(MAKE) _detect_and_dev
+
+build: ## 🏗️  Compilar/build do projeto
+	@echo -e "$(BLUE)🏗️  Executando build...$(NC)"
+	@$(MAKE) _log ACTION_TYPE="build" DESCRIPTION="Executando build do projeto"
+	@$(MAKE) _detect_and_build
+
+test: ## 🧪 Executar testes
+	@echo -e "$(PURPLE)🧪 Executando testes...$(NC)"
+	@$(MAKE) _log ACTION_TYPE="test" DESCRIPTION="Executando testes"
+	@$(MAKE) _detect_and_test
+
+install: ## 📦 Instalar dependências
+	@echo -e "$(GREEN)📦 Instalando dependências...$(NC)"
+	@$(MAKE) _log ACTION_TYPE="install" DESCRIPTION="Instalando dependências"
+	@$(MAKE) _detect_and_install
+
+run: ## ▶️  Executar aplicação
+	@echo -e "$(GREEN)▶️  Executando aplicação...$(NC)"
+	@$(MAKE) _log ACTION_TYPE="run" DESCRIPTION="Executando aplicação"
+	@$(MAKE) _detect_and_run
+
+clean: ## 🧹 Limpar arquivos temporários
+	@echo -e "$(YELLOW)🧹 Limpando arquivos temporários...$(NC)"
+	@$(MAKE) _log ACTION_TYPE="clean" DESCRIPTION="Limpando arquivos temporários"
+	@$(MAKE) _detect_and_clean
+
+##@ 📋 Template Management
+.PHONY: mcp-activate mcp-status generate-config template-test
+
+mcp-activate: ## 🤖 Ativar contexto MCP
+	@echo -e "$(PURPLE)🤖 Ativando contexto MCP...$(NC)"
+	@$(MAKE) _log ACTION_TYPE="mcp_activate" DESCRIPTION="Ativando contexto MCP"
+	@if [ -f "mcp-questions.yaml" ]; then \
+		echo -e "$(GREEN)✅ Configuração MCP encontrada$(NC)"; \
+	else \
+		echo -e "$(YELLOW)⚠️  Configuração MCP não encontrada. Gerando...$(NC)"; \
+		$(MAKE) generate-config; \
+	fi
+
+mcp-status: ## 📊 Verificar status do MCP
+	@echo -e "$(BLUE)📊 Status do MCP:$(NC)"
+	@if [ -f "mcp-questions.yaml" ]; then \
+		echo -e "$(GREEN)  ✅ mcp-questions.yaml presente$(NC)"; \
+	else \
+		echo -e "$(RED)  ❌ mcp-questions.yaml ausente$(NC)"; \
+	fi
+	@if [ -f "objetivo.yaml" ]; then \
+		echo -e "$(GREEN)  ✅ objetivo.yaml presente$(NC)"; \
+	else \
+		echo -e "$(RED)  ❌ objetivo.yaml ausente$(NC)"; \
+	fi
+
+generate-config: ## ⚙️  Gerar configuração MCP baseada no objetivo.yaml
+	@echo -e "$(CYAN)⚙️  Gerando configuração MCP...$(NC)"
+	@$(MAKE) _log ACTION_TYPE="generate_config" DESCRIPTION="Gerando configuração MCP"
+	@if [ -f "objetivo.yaml" ]; then \
+		echo -e "$(GREEN)✅ objetivo.yaml encontrado. Gerando mcp-questions.yaml...$(NC)"; \
+		echo "# Auto-generated MCP configuration" > mcp-questions.yaml; \
+		echo "# Based on objetivo.yaml" >> mcp-questions.yaml; \
+		date >> mcp-questions.yaml; \
+	else \
+		echo -e "$(RED)❌ objetivo.yaml não encontrado$(NC)"; \
+	fi
+
+template-test: ## 🧪 Testar sistema de templates
+	@echo -e "$(PURPLE)🧪 Testando sistema de templates...$(NC)"
+	@$(MAKE) _log ACTION_TYPE="template_test" DESCRIPTION="Testando sistema de templates"
+	@echo -e "$(BLUE)📋 Estrutura de templates:$(NC)"
+	@find templates/ -type f 2>/dev/null | head -10 | sed 's/^/  /' || echo -e "$(YELLOW)  ⚠️  Pasta templates/ não encontrada$(NC)"
+
+##@ 📊 Information & Help
+.PHONY: help info status doctor
+
+help: ## 💡 Mostrar esta ajuda
+	@echo -e "$(BLUE)╔══════════════════════════════════════════════════════════════╗$(NC)"
+	@echo -e "$(BLUE)║$(NC)               $(PURPLE)🤖 AI Project Template v2.0.0$(NC)               $(BLUE)║$(NC)"
+	@echo -e "$(BLUE)║$(NC)                 $(CYAN)Makefile Universal$(NC)                     $(BLUE)║$(NC)"
+	@echo -e "$(BLUE)╚══════════════════════════════════════════════════════════════╝$(NC)"
+	@echo ""
+	@awk 'BEGIN {FS = ":.*##"; printf "$(CYAN)Comandos disponíveis:$(NC)\n"} /^[a-zA-Z_-]+:.*?##/ { printf "  $(GREEN)%-15s$(NC) %s\n", $$1, $$2 } /^##@/ { printf "\n$(YELLOW)%s$(NC)\n", substr($$0, 5) } ' $(MAKEFILE_LIST)
+	@echo ""
+
+info: ## ℹ️  Mostrar informações do projeto
+	@echo -e "$(BLUE)ℹ️  Informações do Projeto:$(NC)"
+	@echo -e "$(CYAN)  📋 Nome: $(PROJECT_NAME)$(NC)"
+	@echo -e "$(CYAN)  📁 Diretório: $(CURDIR)$(NC)"
+	@echo -e "$(CYAN)  🔧 Scripts: $(SCRIPTS_AVAILABLE)$(NC)"
+	@echo -e "$(CYAN)  👤 Usuário: $(USER)$(NC)"
+	@echo -e "$(CYAN)  📅 Data: $(shell date)$(NC)"
+
+status: session-status mcp-status ## 📊 Status completo do projeto
+
+doctor: ## 🏥 Diagnóstico do ambiente
+	@echo -e "$(BLUE)🏥 Diagnóstico do Ambiente:$(NC)"
+	@echo -e "$(CYAN)  Sistema Operacional:$(NC)"
+	@echo -e "    $(shell uname -s) $(shell uname -r)"
+	@echo -e "$(CYAN)  Shell:$(NC)"
+	@echo -e "    $(SHELL)"
+	@echo -e "$(CYAN)  Python:$(NC)"
+	@python3 --version 2>/dev/null || echo -e "    $(RED)❌ Python 3 não encontrado$(NC)"
+	@echo -e "$(CYAN)  Git:$(NC)"
+	@git --version 2>/dev/null || echo -e "    $(RED)❌ Git não encontrado$(NC)"
+	@echo -e "$(CYAN)  Scripts do Template:$(NC)"
+	@test -f $(SESSION_MANAGER) && echo -e "    $(GREEN)✅ session-manager.py$(NC)" || echo -e "    $(RED)❌ session-manager.py$(NC)"
+	@test -f $(LANGUAGE_DETECTOR) && echo -e "    $(GREEN)✅ detect-language.py$(NC)" || echo -e "    $(RED)❌ detect-language.py$(NC)"
+	@test -f $(PROJECT_CREATOR) && echo -e "    $(GREEN)✅ create-project.sh$(NC)" || echo -e "    $(RED)❌ create-project.sh$(NC)"
+
+##@ 🔧 Internal Functions (Language Detection)
+.PHONY: _detect_and_init _detect_and_dev _detect_and_build _detect_and_test _detect_and_install _detect_and_run _detect_and_clean _log
+
+# Função para log de ações na sessão
+_log:
+ifeq ($(SCRIPTS_AVAILABLE),true)
+	@python3 $(SESSION_MANAGER) log "$(ACTION_TYPE)" "$(DESCRIPTION)" --status completed 2>/dev/null || true
+endif
+
+# Detecção e execução por linguagem
+_detect_and_init:
+	@$(MAKE) _detect_language_simple
+	@$(MAKE) _execute_by_language TARGET="init"
+
+_detect_and_dev:
+	@$(MAKE) _detect_language_simple
+	@$(MAKE) _execute_by_language TARGET="dev"
+
+_detect_and_build:
+	@$(MAKE) _detect_language_simple
+	@$(MAKE) _execute_by_language TARGET="build"
+
+_detect_and_test:
+	@$(MAKE) _detect_language_simple
+	@$(MAKE) _execute_by_language TARGET="test"
+
+_detect_and_install:
+	@$(MAKE) _detect_language_simple
+	@$(MAKE) _execute_by_language TARGET="install"
+
+_detect_and_run:
+	@$(MAKE) _detect_language_simple
+	@$(MAKE) _execute_by_language TARGET="run"
+
+_detect_and_clean:
+	@$(MAKE) _detect_language_simple
+	@$(MAKE) _execute_by_language TARGET="clean"
+
+# Detecção de linguagem simplificada
+_detect_language_simple:
+	@if [ -f "package.json" ]; then \
+		echo -e "$(GREEN)🔤 Linguagem detectada: JavaScript/Node.js$(NC)"; \
+		$(eval DETECTED_LANG := javascript) \
+	elif [ -f "requirements.txt" ] || [ -f "setup.py" ] || [ -f "pyproject.toml" ]; then \
+		echo -e "$(GREEN)🔤 Linguagem detectada: Python$(NC)"; \
+		$(eval DETECTED_LANG := python) \
+	elif [ -f "go.mod" ]; then \
+		echo -e "$(GREEN)🔤 Linguagem detectada: Go$(NC)"; \
+		$(eval DETECTED_LANG := go) \
+	elif [ -f "Cargo.toml" ]; then \
+		echo -e "$(GREEN)🔤 Linguagem detectada: Rust$(NC)"; \
+		$(eval DETECTED_LANG := rust) \
+	elif [ -f "pom.xml" ] || [ -f "build.gradle" ]; then \
+		echo -e "$(GREEN)🔤 Linguagem detectada: Java$(NC)"; \
+		$(eval DETECTED_LANG := java) \
+	else \
+		echo -e "$(YELLOW)🔤 Linguagem não detectada. Usando genérico...$(NC)"; \
+		$(eval DETECTED_LANG := generic) \
+	fi
+
+# Execução baseada na linguagem detectada
+_execute_by_language:
+ifeq ($(DETECTED_LANG),python)
+	@$(MAKE) _python_$(TARGET)
+else ifeq ($(DETECTED_LANG),javascript)
+	@$(MAKE) _javascript_$(TARGET)
+else ifeq ($(DETECTED_LANG),go)
+	@$(MAKE) _go_$(TARGET)
+else ifeq ($(DETECTED_LANG),rust)
+	@$(MAKE) _rust_$(TARGET)
+else ifeq ($(DETECTED_LANG),java)
+	@$(MAKE) _java_$(TARGET)
+else
+	@$(MAKE) _generic_$(TARGET)
+endif
+
+# Comandos específicos por linguagem - Python
+_python_init:
+	@echo -e "$(GREEN)🐍 Configurando ambiente Python...$(NC)"
+	@test -f requirements.txt && pip install -r requirements.txt || echo -e "$(YELLOW)⚠️  requirements.txt não encontrado$(NC)"
+	@test -f setup.py && pip install -e . || true
+
+_python_dev:
+	@echo -e "$(CYAN)🐍 Iniciando desenvolvimento Python...$(NC)"
+	@if command -v uvicorn >/dev/null 2>&1 && find . -name "*.py" -exec grep -l "FastAPI\|fastapi" {} \; | head -1 >/dev/null; then \
+		echo -e "$(GREEN)🚀 Detectado FastAPI. Iniciando servidor...$(NC)"; \
+		uvicorn main:app --reload --host 0.0.0.0 --port 8000; \
+	elif find . -name "manage.py" >/dev/null 2>&1; then \
+		echo -e "$(GREEN)🚀 Detectado Django. Iniciando servidor...$(NC)"; \
+		python manage.py runserver; \
+	else \
+		echo -e "$(BLUE)🐍 Executando aplicação Python...$(NC)"; \
+		python main.py 2>/dev/null || python app.py 2>/dev/null || echo -e "$(YELLOW)⚠️  Arquivo principal não encontrado$(NC)"; \
+	fi
+
+_python_build:
+	@echo -e "$(BLUE)🐍 Build Python...$(NC)"
+	@test -f setup.py && python setup.py build || echo -e "$(YELLOW)⚠️  Setup.py não encontrado$(NC)"
+
+_python_test:
+	@echo -e "$(PURPLE)🐍 Executando testes Python...$(NC)"
+	@if command -v pytest >/dev/null 2>&1; then \
+		pytest -v; \
+	else \
+		python -m unittest discover -v; \
+	fi
+
+_python_install:
+	@$(MAKE) _python_init
+
+_python_run:
+	@echo -e "$(GREEN)🐍 Executando aplicação Python...$(NC)"
+	@python main.py 2>/dev/null || python app.py 2>/dev/null || echo -e "$(RED)❌ Arquivo principal não encontrado$(NC)"
+
+_python_clean:
+	@echo -e "$(YELLOW)🐍 Limpando arquivos Python...$(NC)"
+	@find . -type d -name "__pycache__" -exec rm -rf {} + 2>/dev/null || true
+	@find . -name "*.pyc" -delete 2>/dev/null || true
+	@rm -rf build/ dist/ *.egg-info/ .pytest_cache/ .coverage 2>/dev/null || true
+
+# Comandos genéricos (fallback)
+_generic_init:
+	@echo -e "$(BLUE)⚙️  Inicialização genérica...$(NC)"
+	@echo -e "$(YELLOW)ℹ️  Nenhuma linguagem específica detectada$(NC)"
+
+_generic_dev:
+	@echo -e "$(BLUE)⚙️  Modo desenvolvimento genérico...$(NC)"
+	@echo -e "$(YELLOW)ℹ️  Configure um script de desenvolvimento específico$(NC)"
+
+_generic_build:
+	@echo -e "$(BLUE)⚙️  Build genérico...$(NC)"
+	@echo -e "$(YELLOW)ℹ️  Configure um script de build específico$(NC)"
+
+_generic_test:
+	@echo -e "$(BLUE)⚙️  Testes genéricos...$(NC)"
+	@echo -e "$(YELLOW)ℹ️  Configure um script de teste específico$(NC)"
+
+_generic_install:
+	@$(MAKE) _generic_init
+
+_generic_run:
+	@echo -e "$(BLUE)⚙️  Execução genérica...$(NC)"
+	@echo -e "$(YELLOW)ℹ️  Configure um script de execução específico$(NC)"
+
+_generic_clean:
+	@echo -e "$(BLUE)⚙️  Limpeza genérica...$(NC)"
+	@find . -name "*.tmp" -delete 2>/dev/null || true
+	@find . -name "*.log" -delete 2>/dev/null || true
+
+# Language detection
+PYTHON_FILES := $(shell find . -name "*.py" -not -path "./.*" | head -1)
+NODE_FILES := $(shell find . -name "package.json" -not -path "./.*" | head -1)
+GO_FILES := $(shell find . -name "go.mod" -not -path "./.*" | head -1)
+RUST_FILES := $(shell find . -name "Cargo.toml" -not -path "./.*" | head -1)
+JAVA_FILES := $(shell find . -name "pom.xml" -o -name "build.gradle" -not -path "./.*" | head -1)
+
+# Auto-detect project language
+ifdef PYTHON_FILES
+	DETECTED_LANG=python
+else ifdef NODE_FILES
+	DETECTED_LANG=node
+else ifdef GO_FILES
+	DETECTED_LANG=go
+else ifdef RUST_FILES
+	DETECTED_LANG=rust
+else ifdef JAVA_FILES
+	DETECTED_LANG=java
+else
+	DETECTED_LANG=unknown
+endif
+
+## help: Show this help message
+help:
+	@echo "$(GREEN)AI Project Template - Universal Commands$(NC)"
+	@echo "$(YELLOW)Detected language: $(DETECTED_LANG)$(NC)"
+	@echo ""
+	@echo "$(GREEN)Available commands:$(NC)"
+	@awk 'BEGIN {FS = ":.*##"} /^[a-zA-Z_-]+:.*##/ { printf "  $(GREEN)%-15s$(NC) %s\n", $$1, $$2 }' $(MAKEFILE_LIST)
+
+## init: Initialize project (language detection + setup)
+init:
+	@echo "$(GREEN)Initializing project...$(NC)"
+	@echo "$(YELLOW)Detected language: $(DETECTED_LANG)$(NC)"
+	@$(MAKE) setup-$(DETECTED_LANG)
+
+## install: Install dependencies
+install:
+	@$(MAKE) install-$(DETECTED_LANG)
+
+## dev: Start development server
+dev:
+	@$(MAKE) dev-$(DETECTED_LANG)
+
+## build: Build the project
+build:
+	@$(MAKE) build-$(DETECTED_LANG)
+
+## test: Run tests
+test:
+	@$(MAKE) test-$(DETECTED_LANG)
+
+## lint: Run linting
+lint:
+	@$(MAKE) lint-$(DETECTED_LANG)
+
+## format: Format code
+format:
+	@$(MAKE) format-$(DETECTED_LANG)
+
+## clean: Clean build artifacts
+clean:
+	@$(MAKE) clean-$(DETECTED_LANG)
+
+## docker-build: Build Docker image
+docker-build:
+	@echo "$(GREEN)Building Docker image...$(NC)"
+	docker build -t $(shell basename $(PWD)) .
+
+## docker-run: Run Docker container
+docker-run:
+	@echo "$(GREEN)Running Docker container...$(NC)"
+	docker run --rm -it $(shell basename $(PWD))
+
+## docs: Generate documentation
+docs:
+	@$(MAKE) docs-$(DETECTED_LANG)
+
+## deploy: Deploy the project
+deploy:
+	@echo "$(GREEN)Deploying project...$(NC)"
+	@$(MAKE) deploy-$(DETECTED_LANG)
+
+## health: Check project health
+health:
+	@echo "$(GREEN)Checking project health...$(NC)"
+	@$(MAKE) health-$(DETECTED_LANG)
+
+## update: Update dependencies
+update:
+	@$(MAKE) update-$(DETECTED_LANG)
+
+## security: Run security checks
+security:
+	@$(MAKE) security-$(DETECTED_LANG)
+
+## benchmark: Run performance benchmarks
+benchmark:
+	@$(MAKE) benchmark-$(DETECTED_LANG)
+
+# Python-specific commands
+setup-python:
+	@echo "$(GREEN)Setting up Python project...$(NC)"
+	python -m venv venv || python3 -m venv venv
+	@echo "$(YELLOW)Activate virtual environment: source venv/bin/activate$(NC)"
+
+install-python:
+	@echo "$(GREEN)Installing Python dependencies...$(NC)"
+	pip install -r requirements.txt || pip install -e .
+
+dev-python:
+	@echo "$(GREEN)Starting Python development...$(NC)"
+	python main.py || python -m src || uvicorn main:app --reload
+
+build-python:
+	@echo "$(GREEN)Building Python project...$(NC)"
+	python setup.py sdist bdist_wheel || python -m build
+
+test-python:
+	@echo "$(GREEN)Running Python tests...$(NC)"
+	pytest || python -m pytest || python -m unittest
+
+lint-python:
+	@echo "$(GREEN)Linting Python code...$(NC)"
+	ruff check . || flake8 . || pylint src/
+
+format-python:
+	@echo "$(GREEN)Formatting Python code...$(NC)"
+	black . || autopep8 --in-place --recursive .
+
+clean-python:
+	@echo "$(GREEN)Cleaning Python artifacts...$(NC)"
+	rm -rf build/ dist/ *.egg-info/ __pycache__/ .pytest_cache/ .coverage
+
+docs-python:
+	@echo "$(GREEN)Generating Python documentation...$(NC)"
+	sphinx-build -b html docs/ docs/_build/ || pydoc-markdown
+
+deploy-python:
+	@echo "$(GREEN)Deploying Python project...$(NC)"
+	twine upload dist/* || echo "Configure deployment method"
+
+health-python:
+	@echo "$(GREEN)Python project health check...$(NC)"
+	python --version && pip list
+
+update-python:
+	@echo "$(GREEN)Updating Python dependencies...$(NC)"
+	pip install --upgrade -r requirements.txt
+
+security-python:
+	@echo "$(GREEN)Running Python security checks...$(NC)"
+	safety check || bandit -r src/
+
+benchmark-python:
+	@echo "$(GREEN)Running Python benchmarks...$(NC)"
+	python -m pytest --benchmark-only || echo "No benchmarks found"
+
+# Node.js-specific commands
+setup-node:
+	@echo "$(GREEN)Setting up Node.js project...$(NC)"
+	npm install || yarn install
+
+install-node:
+	@echo "$(GREEN)Installing Node.js dependencies...$(NC)"
+	npm install || yarn install
+
+dev-node:
+	@echo "$(GREEN)Starting Node.js development...$(NC)"
+	npm run dev || npm start || yarn dev
+
+build-node:
+	@echo "$(GREEN)Building Node.js project...$(NC)"
+	npm run build || yarn build
+
+test-node:
+	@echo "$(GREEN)Running Node.js tests...$(NC)"
+	npm test || yarn test
+
+lint-node:
+	@echo "$(GREEN)Linting Node.js code...$(NC)"
+	npm run lint || npx eslint .
+
+format-node:
+	@echo "$(GREEN)Formatting Node.js code...$(NC)"
+	npm run format || npx prettier --write .
+
+clean-node:
+	@echo "$(GREEN)Cleaning Node.js artifacts...$(NC)"
+	rm -rf node_modules/ dist/ build/ .next/
+
+docs-node:
+	@echo "$(GREEN)Generating Node.js documentation...$(NC)"
+	npm run docs || npx jsdoc -r .
+
+deploy-node:
+	@echo "$(GREEN)Deploying Node.js project...$(NC)"
+	npm run deploy || echo "Configure deployment method"
+
+health-node:
+	@echo "$(GREEN)Node.js project health check...$(NC)"
+	node --version && npm list --depth=0
+
+update-node:
+	@echo "$(GREEN)Updating Node.js dependencies...$(NC)"
+	npm update || yarn upgrade
+
+security-node:
+	@echo "$(GREEN)Running Node.js security checks...$(NC)"
+	npm audit || yarn audit
+
+benchmark-node:
+	@echo "$(GREEN)Running Node.js benchmarks...$(NC)"
+	npm run benchmark || echo "No benchmarks configured"
+
+# Go-specific commands
+setup-go:
+	@echo "$(GREEN)Setting up Go project...$(NC)"
+	go mod download
+
+install-go:
+	@echo "$(GREEN)Installing Go dependencies...$(NC)"
+	go mod download && go mod tidy
+
+dev-go:
+	@echo "$(GREEN)Starting Go development...$(NC)"
+	go run . || air
+
+build-go:
+	@echo "$(GREEN)Building Go project...$(NC)"
+	go build -o bin/app .
+
+test-go:
+	@echo "$(GREEN)Running Go tests...$(NC)"
+	go test ./...
+
+lint-go:
+	@echo "$(GREEN)Linting Go code...$(NC)"
+	golangci-lint run || go vet ./...
+
+format-go:
+	@echo "$(GREEN)Formatting Go code...$(NC)"
+	go fmt ./...
+
+clean-go:
+	@echo "$(GREEN)Cleaning Go artifacts...$(NC)"
+	go clean && rm -rf bin/
+
+docs-go:
+	@echo "$(GREEN)Generating Go documentation...$(NC)"
+	godoc -http=:6060 || go doc
+
+deploy-go:
+	@echo "$(GREEN)Deploying Go project...$(NC)"
+	echo "Configure deployment method"
+
+health-go:
+	@echo "$(GREEN)Go project health check...$(NC)"
+	go version && go list -m all
+
+update-go:
+	@echo "$(GREEN)Updating Go dependencies...$(NC)"
+	go get -u ./... && go mod tidy
+
+security-go:
+	@echo "$(GREEN)Running Go security checks...$(NC)"
+	gosec ./... || echo "Install gosec for security scanning"
+
+benchmark-go:
+	@echo "$(GREEN)Running Go benchmarks...$(NC)"
+	go test -bench=.
+
+# Rust-specific commands
+setup-rust:
+	@echo "$(GREEN)Setting up Rust project...$(NC)"
+	cargo check
+
+install-rust:
+	@echo "$(GREEN)Installing Rust dependencies...$(NC)"
+	cargo fetch
+
+dev-rust:
+	@echo "$(GREEN)Starting Rust development...$(NC)"
+	cargo run || cargo watch -x run
+
+build-rust:
+	@echo "$(GREEN)Building Rust project...$(NC)"
+	cargo build --release
+
+test-rust:
+	@echo "$(GREEN)Running Rust tests...$(NC)"
+	cargo test
+
+lint-rust:
+	@echo "$(GREEN)Linting Rust code...$(NC)"
+	cargo clippy
+
+format-rust:
+	@echo "$(GREEN)Formatting Rust code...$(NC)"
+	cargo fmt
+
+clean-rust:
+	@echo "$(GREEN)Cleaning Rust artifacts...$(NC)"
+	cargo clean
+
+docs-rust:
+	@echo "$(GREEN)Generating Rust documentation...$(NC)"
+	cargo doc --open
+
+deploy-rust:
+	@echo "$(GREEN)Deploying Rust project...$(NC)"
+	echo "Configure deployment method"
+
+health-rust:
+	@echo "$(GREEN)Rust project health check...$(NC)"
+	rustc --version && cargo --version
+
+update-rust:
+	@echo "$(GREEN)Updating Rust dependencies...$(NC)"
+	cargo update
+
+security-rust:
+	@echo "$(GREEN)Running Rust security checks...$(NC)"
+	cargo audit || echo "Install cargo-audit for security scanning"
+
+benchmark-rust:
+	@echo "$(GREEN)Running Rust benchmarks...$(NC)"
+	cargo bench
+
+# Java-specific commands
+setup-java:
+	@echo "$(GREEN)Setting up Java project...$(NC)"
+	./mvnw --version || ./gradlew --version || echo "Maven/Gradle wrapper not found"
+
+install-java:
+	@echo "$(GREEN)Installing Java dependencies...$(NC)"
+	./mvnw dependency:resolve || ./gradlew dependencies
+
+dev-java:
+	@echo "$(GREEN)Starting Java development...$(NC)"
+	./mvnw spring-boot:run || ./gradlew bootRun
+
+build-java:
+	@echo "$(GREEN)Building Java project...$(NC)"
+	./mvnw package || ./gradlew build
+
+test-java:
+	@echo "$(GREEN)Running Java tests...$(NC)"
+	./mvnw test || ./gradlew test
+
+lint-java:
+	@echo "$(GREEN)Linting Java code...$(NC)"
+	./mvnw checkstyle:check || ./gradlew checkstyleMain
+
+format-java:
+	@echo "$(GREEN)Formatting Java code...$(NC)"
+	./mvnw formatter:format || ./gradlew spotlessApply
+
+clean-java:
+	@echo "$(GREEN)Cleaning Java artifacts...$(NC)"
+	./mvnw clean || ./gradlew clean
+
+docs-java:
+	@echo "$(GREEN)Generating Java documentation...$(NC)"
+	./mvnw javadoc:javadoc || ./gradlew javadoc
+
+deploy-java:
+	@echo "$(GREEN)Deploying Java project...$(NC)"
+	echo "Configure deployment method"
+
+health-java:
+	@echo "$(GREEN)Java project health check...$(NC)"
+	java --version && ./mvnw --version || ./gradlew --version
+
+update-java:
+	@echo "$(GREEN)Updating Java dependencies...$(NC)"
+	./mvnw versions:use-latest-versions || echo "Update dependencies manually"
+
+security-java:
+	@echo "$(GREEN)Running Java security checks...$(NC)"
+	./mvnw dependency-check:check || echo "Configure OWASP dependency check"
+
+benchmark-java:
+	@echo "$(GREEN)Running Java benchmarks...$(NC)"
+	./mvnw test -Dtest=BenchmarkTest || echo "No benchmarks found"
+
+# Unknown language fallback
+setup-unknown install-unknown dev-unknown build-unknown test-unknown lint-unknown format-unknown clean-unknown docs-unknown deploy-unknown health-unknown update-unknown security-unknown benchmark-unknown:
+	@echo "$(RED)Unknown project type. Please specify language or configure manually.$(NC)"
+	@echo "$(YELLOW)Supported languages: python, node, go, rust, java$(NC)"
+
+.PHONY: help init install dev build test lint format clean docker-build docker-run docs deploy health update security benchmark

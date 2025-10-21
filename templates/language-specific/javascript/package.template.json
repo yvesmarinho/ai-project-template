@@ -1,0 +1,192 @@
+{
+  "name": "{{project_name}}",
+  "version": "{{version}}",
+  "description": "{{description}}",
+  "main": "{{#if framework}}{{#if (eq framework "express")}}src/app.js{{else}}{{#if (eq framework "next")}}next.config.js{{else}}src/index.js{{/if}}{{/if}}{{else}}src/index.js{{/if}}",
+  "type": "{{module_type}}",
+  "scripts": {
+    {
+      {#if framework
+      }
+    }
+    {
+      {#if (eq framework "express")
+      }
+    }
+    "start": "node src/app.js",
+    "dev": "nodemon src/app.js",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage",
+    "lint": "eslint src/ --ext .js,.jsx",
+    "lint:fix": "eslint src/ --ext .js,.jsx --fix"{
+      {/if
+      }
+    }
+    {
+      {#if (eq framework "react")
+      }
+    }
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject",
+    "lint": "eslint src/ --ext .js,.jsx,.ts,.tsx",
+    "dev": "npm start"{
+      {/if
+      }
+    }
+    {
+      {#if (eq framework "next")
+      }
+    }
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "test": "jest"{
+      {/if
+      }
+    }
+    {
+      {else
+      }
+    }
+    "start": "node src/index.js",
+    "dev": "nodemon src/index.js",
+    "test": "jest",
+    "lint": "eslint src/ --ext .js",
+    "build": "webpack --mode production"{
+      {/if
+      }
+    }
+  },
+  "keywords": [
+    {
+      {#each keywords
+      }
+    }
+    "{{this}}"{
+      {#unless @last
+      }
+    },
+    {
+      {/unless
+      }
+    }
+    {
+      {/each
+      }
+    }
+  ],
+  "author": {
+    "name": "{{author_name}}",
+    "email": "{{author_email}}"
+  },
+  "license": "{{license}}",
+  "dependencies": {
+    {
+      {#if framework
+      }
+    }
+    {
+      {#if (eq framework "express")
+      }
+    }
+    "express": "^4.18.2",
+    "cors": "^2.8.5",
+    "helmet": "^7.1.0",
+    "dotenv": "^16.3.1"{
+      {/if
+      }
+    }
+    {
+      {#if (eq framework "react")
+      }
+    }
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-scripts": "5.0.1"{
+      {/if
+      }
+    }
+    {
+      {#if (eq framework "next")
+      }
+    }
+    "next": "^14.0.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"{
+      {/if
+      }
+    }
+    {
+      {else
+      }
+    }
+    "dotenv": "^16.3.1"{
+      {/if
+      }
+    }
+  },
+  "devDependencies": {
+    {
+      {#if framework
+      }
+    }
+    {
+      {#if (eq framework "express")
+      }
+    }
+    "nodemon": "^3.0.1",
+    "jest": "^29.7.0",
+    "supertest": "^6.3.3",
+    "eslint": "^8.54.0"{
+      {/if
+      }
+    }
+    {
+      {#if (eq framework "react")
+      }
+    }
+    "@testing-library/react": "^13.4.0",
+    "@testing-library/jest-dom": "^5.16.5"{
+      {/if
+      }
+    }
+    {
+      {#if (eq framework "next")
+      }
+    }
+    "eslint": "^8.54.0",
+    "eslint-config-next": "^14.0.0"{
+      {/if
+      }
+    }
+    {
+      {else
+      }
+    }
+    "nodemon": "^3.0.1",
+    "jest": "^29.7.0",
+    "eslint": "^8.54.0"{
+      {/if
+      }
+    }
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=8.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "{{repository_url}}"
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "collectCoverageFrom": [
+      "src/**/*.js",
+      "!src/**/*.test.js"
+    ]
+  }
+}

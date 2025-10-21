@@ -1,0 +1,324 @@
+# Configuração MCP para AI Project Template
+# Este arquivo define as configurações específicas para o template agnóstico
+# Gerado automaticamente baseado no objetivo.yaml
+
+# === INFORMAÇÕES BÁSICAS DO PROJETO ===
+project_name: "ai-project-template"
+project_type: "template"
+language: "agnostic"
+framework: "universal"
+description: "Template enterprise para criação automatizada de projetos com utilização MCP e GitHub Copilot, agnóstico à linguagem de programação"
+
+# === CONFIGURAÇÕES ESPECÍFICAS DO TEMPLATE ===
+template_version: "1.0.0"
+template_engine: "jinja2" # Para processamento de templates
+configuration_format: "yaml" # Formato padrão de configuração
+placeholder_syntax: "{{variable}}" # Sintaxe para substituições
+
+# === DETECÇÃO AUTOMÁTICA DE LINGUAGEM ===
+language_detection:
+  auto_detect: true
+  detection_methods:
+    - "file_extensions"
+    - "configuration_files" 
+    - "directory_structure"
+    - "content_analysis"
+  
+supported_languages:
+  - name: "python"
+    extensions: [".py", ".pyx", ".pyw"]
+    config_files: ["requirements.txt", "setup.py", "pyproject.toml", "Pipfile"]
+    package_managers: ["pip", "poetry", "pipenv", "conda"]
+    
+  - name: "javascript"
+    extensions: [".js", ".mjs", ".cjs"]
+    config_files: ["package.json", ".npmrc", "yarn.lock"]
+    package_managers: ["npm", "yarn", "pnpm"]
+    
+  - name: "typescript"
+    extensions: [".ts", ".tsx"]
+    config_files: ["tsconfig.json", "package.json"]
+    package_managers: ["npm", "yarn", "pnpm"]
+    
+  - name: "go"
+    extensions: [".go"]
+    config_files: ["go.mod", "go.sum"]
+    package_managers: ["go modules"]
+    
+  - name: "rust"
+    extensions: [".rs"]
+    config_files: ["Cargo.toml", "Cargo.lock"]
+    package_managers: ["cargo"]
+    
+  - name: "java"
+    extensions: [".java"]
+    config_files: ["pom.xml", "build.gradle", "build.gradle.kts"]
+    package_managers: ["maven", "gradle"]
+    
+  - name: "csharp"
+    extensions: [".cs", ".csx"]
+    config_files: [".csproj", ".sln", "Directory.Build.props"]
+    package_managers: ["nuget", "dotnet"]
+
+# === CONFIGURAÇÕES DE BANCO DE DADOS ===
+database_detection:
+  auto_detect: true
+  supported_databases:
+    - "postgresql"
+    - "mysql"
+    - "sqlite"
+    - "mongodb"
+    - "redis"
+    - "cassandra"
+    - "elasticsearch"
+
+# === ESTRUTURA DE PASTAS UNIVERSAL ===
+folder_structure:
+  template_core:
+    - "objetivo.yaml - Especificação do template"
+    - "mcp-questions.yaml - Configuração MCP gerada"
+    - "TODO.md - Gestão de tarefas"
+    - "README.template.md - Template de documentação"
+  
+  template_assets:
+    - "templates/ - Modelos de arquivos por linguagem"
+    - "pattern_code/ - Padrões de código reutilizáveis"
+    - "snippets/ - Códigos auxiliares"
+    - "docs/template/ - Documentação do template"
+    - "scripts/ - Automação e utilitários"
+  
+  generated_structure:
+    - "src/ ou app/ - Código fonte (adaptável por linguagem)"
+    - "tests/ - Testes automatizados"
+    - "docs/ - Documentação do projeto"
+    - "config/ - Configurações específicas"
+    - "scripts/ - Scripts de automação"
+    - ".vscode/ - Configurações VS Code"
+    - ".secrets/ - Dados sensíveis (não versionados)"
+
+# === FUNCIONALIDADES DO TEMPLATE ===
+features:
+  core_capabilities:
+    - "Detecção automática de linguagem e framework"
+    - "Geração de estrutura de projeto adaptativa"
+    - "Configuração automática de ferramentas de build"
+    - "Setup de ambiente de desenvolvimento"
+    - "Integração com GitHub Copilot"
+    - "Sistema de versionamento automático"
+    - "Backup e recovery de código"
+    - "Rastreamento de mudanças"
+  
+  automation_features:
+    - "Workflow de 5 etapas automatizado"
+    - "Prompts específicos para Copilot"
+    - "Configuração MCP dinâmica"
+    - "Geração de documentação automática"
+    - "Sistema de relatórios de sessão"
+    - "Gestão de TODOs e melhorias"
+    - "Controle de qualidade automático"
+  
+  development_tools:
+    - "Templates de código por linguagem"
+    - "Configuração de testes automáticos"
+    - "Setup de CI/CD agnóstico"
+    - "Monitoramento e observabilidade"
+    - "Segurança e compliance"
+
+# === CONFIGURAÇÃO MCP ESPECÍFICA ===
+mcp_integration:
+  context_name: "ai-project-template-context"
+  
+  capabilities:
+    - "Template generation com contexto específico"
+    - "Language-specific code suggestions"
+    - "Framework-aware completions"
+    - "Adaptive documentation generation"
+    - "Intelligent file organization"
+    - "Cross-language pattern recognition"
+    - "Automated testing setup"
+    - "Deployment configuration assistance"
+  
+  prompts:
+    initialization: "Analyze project requirements and initialize appropriate template structure"
+    language_detection: "Detect project language and framework based on available files"
+    configuration: "Generate language-specific configurations and dependencies"
+    testing: "Setup testing framework and generate test templates"
+    documentation: "Create comprehensive documentation based on project context"
+
+# === VARIÁVEIS DE AMBIENTE UNIVERSAIS ===
+env_variables:
+  template_config:
+    - "TEMPLATE_VERSION - Versão atual do template"
+    - "PROJECT_LANGUAGE - Linguagem detectada/configurada"
+    - "PROJECT_FRAMEWORK - Framework detectado"
+    - "BUILD_SYSTEM - Sistema de build configurado"
+    - "PACKAGE_MANAGER - Gerenciador de pacotes"
+  
+  development:
+    - "DEBUG_MODE - Modo debug (padrão: false)"
+    - "LOG_LEVEL - Nível de log (padrão: INFO)"
+    - "VERBOSE_OUTPUT - Saída verbosa (padrão: false)"
+    - "AUTO_BACKUP - Backup automático (padrão: true)"
+  
+  security:
+    - "ENCRYPTION_KEY - Chave para criptografia de dados sensíveis"
+    - "ACCESS_TOKEN - Token de acesso para APIs"
+    - "SECURE_MODE - Modo seguro (padrão: true)"
+
+# === TESTES E QUALIDADE ===
+testing_configuration:
+  framework_detection: true
+  supported_frameworks:
+    python: ["pytest", "unittest", "nose2"]
+    javascript: ["jest", "mocha", "vitest"]
+    typescript: ["jest", "@testing-library", "vitest"]
+    go: ["go test", "ginkgo", "testify"]
+    rust: ["cargo test", "rstest"]
+    java: ["junit", "testng", "spock"]
+    csharp: ["xunit", "nunit", "mstest"]
+  
+  quality_tools:
+    linting: "Auto-detect and configure appropriate linters"
+    formatting: "Auto-detect and configure code formatters"
+    type_checking: "Setup type checking when available"
+    security_scanning: "Configure security vulnerability scanning"
+
+# === DOCUMENTAÇÃO ADAPTATIVA ===
+documentation:
+  auto_generation: true
+  formats:
+    - "Markdown (universal)"
+    - "reStructuredText (Python)"
+    - "JSDoc (JavaScript/TypeScript)"
+    - "GoDoc (Go)"
+    - "RustDoc (Rust)"
+    - "Javadoc (Java)"
+    - "XMLDoc (C#)"
+  
+  templates:
+    readme: "pattern_code/README.template.md"
+    api_docs: "pattern_code/API.template.md"
+    contributing: "pattern_code/CONTRIBUTING.template.md"
+    changelog: "pattern_code/CHANGELOG.template.md"
+
+# === BUILD E DEPLOY AGNÓSTICOS ===
+build_configuration:
+  system_detection: true
+  supported_systems:
+    - "Make (universal)"
+    - "npm scripts (Node.js)"
+    - "cargo (Rust)"
+    - "go build (Go)"
+    - "maven/gradle (Java)"
+    - "dotnet (C#)"
+    - "setuptools/poetry (Python)"
+  
+  deployment_targets:
+    - "docker"
+    - "kubernetes"
+    - "serverless"
+    - "traditional_server"
+    - "static_hosting"
+
+# === CI/CD PIPELINE UNIVERSAL ===
+ci_cd:
+  auto_configuration: true
+  supported_platforms:
+    - "github-actions"
+    - "gitlab-ci"
+    - "jenkins"
+    - "azure-devops"
+    - "circleci"
+  
+  pipeline_stages:
+    - "validate-syntax"
+    - "install-dependencies"
+    - "run-tests"
+    - "quality-checks"
+    - "security-scan"
+    - "build"
+    - "deploy"
+
+# === LOGS E MONITORAMENTO ===
+logging:
+  structured_logging: true
+  log_format: "json"
+  log_levels: ["TRACE", "DEBUG", "INFO", "WARN", "ERROR", "FATAL"]
+  session_tracking: true
+  performance_metrics: true
+
+# === SEGURANÇA ===
+security:
+  best_practices: true
+  vulnerability_scanning: true
+  secrets_management: true
+  access_control: true
+  audit_logging: true
+  compliance_checks: ["GDPR", "SOC2"]
+
+# === CONFIGURAÇÕES DE SESSÃO ===
+session_management:
+  session_reports: true
+  report_format: "SESSION-REPORT-YYYY-MM-DD.md"
+  report_location: "reports/"
+  
+  version_control:
+    file_versioning: true
+    version_pattern: "filename-vnnn.*"
+    backup_strategy: "incremental"
+    rollback_enabled: true
+  
+  tracking:
+    change_history: true
+    todo_management: true
+    improvement_suggestions: true
+    issue_tracking: true
+
+# === EXTENSÕES VS CODE RECOMENDADAS ===
+vscode_extensions:
+  universal:
+    - "GitHub.copilot"
+    - "GitHub.copilot-chat" 
+    - "ms-vscode.vscode-json"
+    - "redhat.vscode-yaml"
+    - "ms-vscode.makefile-tools"
+    - "GitLens"
+    - "Docker"
+    - "Thunder Client"
+  
+  language_specific:
+    auto_install: true
+    detection_based: true
+
+# === PERFORMANCE E OTIMIZAÇÃO ===
+performance:
+  caching: true
+  lazy_loading: true
+  parallel_processing: true
+  resource_optimization: true
+  
+  benchmarks:
+    project_generation: "< 30 seconds"
+    language_detection: "< 5 seconds"
+    mcp_configuration: "< 10 seconds"
+    context_activation: "< 15 seconds"
+
+# === CONFIGURAÇÕES AVANÇADAS ===
+advanced_features:
+  ai_integration:
+    - "GitHub Copilot workflow automation"
+    - "Intelligent code suggestions"
+    - "Contextual documentation generation"
+    - "Adaptive template selection"
+  
+  automation:
+    - "Smart dependency resolution"
+    - "Automatic testing setup"
+    - "CI/CD pipeline generation"
+    - "Environment configuration"
+  
+  quality_assurance:
+    - "Code style enforcement"
+    - "Security vulnerability scanning"
+    - "Performance optimization"
+    - "Best practices validation"

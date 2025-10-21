@@ -1,0 +1,97 @@
+[build-system]
+requires = ["setuptools>=68.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "{{project_name}}"
+version = "{{version}}"
+description = "{{description}}"
+readme = "README.md"
+authors = [
+    {name = "{{author_name}}", email = "{{author_email}}"}
+]
+license = {text = "{{license}}"}
+classifiers = [
+    "Development Status :: {{development_status}}",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: {{license_classifier}}",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    {{#if project_type}}
+    {{#if (eq project_type "api")}}
+    "Topic :: Internet :: WWW/HTTP :: HTTP Servers",
+    {{/if}}
+    {{#if (eq project_type "cli")}}
+    "Environment :: Console",
+    {{/if}}
+    {{#if (eq project_type "library")}}
+    "Topic :: Software Development :: Libraries",
+    {{/if}}
+    {{/if}}
+]
+dependencies = []
+requires-python = ">=3.9"
+dynamic = ["version"]
+
+[project.urls]
+homepage = "{{repository_url}}"
+documentation = "{{docs_url}}"
+repository = "{{repository_url}}"
+changelog = "{{repository_url}}/blob/main/CHANGELOG.md"
+
+{{#if project_type}}
+{{#if (eq project_type "cli")}}
+[project.scripts]
+{{package_name}} = "{{package_name}}.cli:main"
+{{/if}}
+{{/if}}
+
+[project.optional-dependencies]
+dev = [
+    {{DEV_DEPENDENCIES}}
+]
+test = [
+    {{TEST_DEPENDENCIES}}
+]
+
+[project.urls]
+Homepage = "{{REPOSITORY_URL}}"
+Repository = "{{REPOSITORY_URL}}"
+Documentation = "{{DOCUMENTATION_URL}}"
+"Bug Tracker" = "{{REPOSITORY_URL}}/issues"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-dir]
+"" = "src"
+
+[tool.black]
+line-length = 88
+target-version = ['py38']
+
+[tool.ruff]
+line-length = 88
+target-version = "py38"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_functions = ["test_*"]
+addopts = "-v --cov={{PROJECT_NAME}} --cov-report=term-missing"
+
+[tool.coverage.run]
+source = ["src"]
+omit = ["*/tests/*"]
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "raise AssertionError",
+    "raise NotImplementedError",
+]

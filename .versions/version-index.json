@@ -1,0 +1,20 @@
+{
+  "TODO.md": {
+    "original_file": "TODO.md",
+    "current_version": 1,
+    "versions": [
+      ".versions/TODO-v001.md"
+    ],
+    "last_modified": "2025-10-20T19:44:51.192781",
+    "backup_dir": ".versions"
+  },
+  "Makefile": {
+    "original_file": "Makefile",
+    "current_version": 1,
+    "versions": [
+      ".versions/Makefile-v001"
+    ],
+    "last_modified": "2025-10-20T19:46:52.401088",
+    "backup_dir": ".versions"
+  }
+}

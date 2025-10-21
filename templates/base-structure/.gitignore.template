@@ -1,0 +1,47 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Dependency directories
+{{DEPENDENCY_DIRS}}
+
+# Build outputs
+{{BUILD_DIRS}}
+
+# Environment files
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Secrets
+.secrets/
+*.key
+*.pem
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Cache
+.cache/
+*.tmp
+
+# Language specific
+{{LANGUAGE_SPECIFIC_IGNORES}}
+
+# Framework specific  
+{{FRAMEWORK_SPECIFIC_IGNORES}}
+
+# Project specific
+{{PROJECT_SPECIFIC_IGNORES}}
